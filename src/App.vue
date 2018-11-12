@@ -1,19 +1,19 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <section class="hero is-fullheight-with-navbar">
+      <div class="hero-body rota">
+        <router-view/>
+      </div>
+    </section>
   </div>
 </template>
 
 <style>
+@import '../src/assets/icomoon/style.css';
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 #nav {
@@ -27,5 +27,16 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.hero-body{
+  height: 100% !important;
+  padding: 0 !important;
+}
+
+.rota{
+  display: flex !important;
+  overflow: hidden !important;
+  height: calc(100vh) !important;
 }
 </style>

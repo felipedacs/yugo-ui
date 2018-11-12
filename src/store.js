@@ -5,6 +5,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    apiRoot: 'http://localhost:8083',
+    pathPosts: '/api/posts',
+    pathPost: '/api/post/',
 
   },
   mutations: {
