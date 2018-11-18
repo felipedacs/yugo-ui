@@ -6,25 +6,25 @@
 
       <div class="columns is-gapless is-mobile">
         <div class="column">
-          <router-link to="/" class="button is-danger btn-post is-fullwidth"><span class="icon-trash-o"></span></router-link>
+          <a class="button is-danger btn-post is-fullwidth" @click="DeletarPost()"><span class="icon-trash-o"></span></a>
         </div>
         <div class="column is-8">
           <b-field>
-            <b-input v-model="post.Nome"></b-input>
+            <b-input v-model="post.nome"></b-input>
           </b-field>
         </div>
         <div class="column">
-          <router-link to="/" class="button is-warning btn-post is-fullwidth"><span class="icon-pencil"></span></router-link>
+          <a class="button is-warning btn-post is-fullwidth" @click="RenomearPost()"><span class="icon-pencil"></span></a>
         </div>
         <div class="column">
-          <router-link to="/" class="button is-success btn-post is-fullwidth"><span class="icon-check"></span></router-link>
+          <a class="button is-success btn-post is-fullwidth" @click="SalvarPost()"><span class="icon-check"></span></a>
         </div>
       </div>
 
 
 
       <b-field>
-        <b-input type="textarea" v-model="post.Conteudo"></b-input>
+        <b-input type="textarea" v-model="post.conteudo"></b-input>
       </b-field>
     </vc-dash-board>
   </div>
@@ -44,8 +44,10 @@ export default {
   },
   data(){
     return{
+      nomeOriginal: null,
       post: {
-        Conteudo: 'carregando...',
+        nome: "carregando nome...",
+        conteudo: 'carregando...',
       },
       errors: [],
     }
@@ -60,12 +62,51 @@ export default {
     }
   },
   methods: {
+    DeletarPost(){
+      this.$http.post('http://localhost:8083/api/deletepost', JSON.stringify(this.post),
+      {
+      }).then(response => {
+        console.log('Success : ' + JSON.stringify(response));
+      }, response => {
+        console.log('Error : ' + JSON.stringify(response));
+      });
+    },
+    RenomearPost(){
+      console.log(this.nomeOriginal);
+      var reqData = {
+        "nome": this.nomeOriginal,
+        "novoNome": this.post.nome,
+        "conteudo": this.post.conteudo
+      }
+
+      this.$http.post('http://localhost:8083/api/renamepost', JSON.stringify(reqData),
+      {
+      }).then(response => {
+        console.log('Success : ' + JSON.stringify(response));
+      }, response => {
+        console.log('Error : ' + JSON.stringify(response));
+      });
+    },
+    SalvarPost() {
+      let vm = this;
+
+      var reqData = {"repo": vm.urlRepository}
+
+      this.$http.post('http://localhost:8083/api/savepost', JSON.stringify(vm.post),
+      {
+      }).then(response => {
+        console.log('Success : ' + JSON.stringify(response));
+      }, response => {
+        console.log('Error : ' + JSON.stringify(response));
+      });
+    },
     getPost() {
       axios
       .get('http://localhost:8083/api/post/' + this.$route.params.filename)
       .then(response => {
         this.post = response.data;
-        console.log(response.data);
+        this.nomeOriginal=this.post.nome;
+        // console.log(response.data);
       })
       .catch(e => {
         this.errors.push(e)

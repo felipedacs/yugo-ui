@@ -1,4 +1,4 @@
-# yugo-vue
+# yugo-ui
 
 ## Project setup
 ```

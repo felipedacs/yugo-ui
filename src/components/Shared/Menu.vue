@@ -33,16 +33,15 @@ export default {
     }
   },
   created(){
-    axios
-    .get(this.$store.state.apiRoot + this.$store.state.pathPosts)
-    .then(response => {
-      for (var i = 0; i < response.data.length; i++) {
-        this.posts.push(response.data[i].Nome.replace('.md', ''))
+    this.$http.get(this.$store.state.apiRoot + this.$store.state.pathPosts).then(response => {
+
+    for (var i = 0; i < response.body.length; i++) {
+        this.posts.push(response.body[i].nome.replace('.md', ''))
       }
-    })
-    .catch(e => {
-      this.errors.push(e)
-    })
+
+  }, response => {
+    // error callback
+  });
   },
   methods: {
     mostraLinksPosts() {

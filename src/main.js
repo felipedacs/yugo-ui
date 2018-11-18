@@ -8,6 +8,10 @@ import "vue-material-design-icons/styles.css"
 
 Vue.use(Buefy)
 
+import VueResource from 'vue-resource'
+Vue.use(VueResource)
+// Vue.http.options.emulateJSON = true
+// Vue.http.headers.common['Access-Control-Allow-Origin'] = '*'
 //nightwatch e2e
 
 Vue.config.productionTip = false

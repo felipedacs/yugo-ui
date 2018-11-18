@@ -4,12 +4,12 @@
     <vc-posts/>
     <vc-dash-board>
       <div class="btn-acao">
-        <router-link to="/post" class="button is-medium is-success">Novo post</router-link>
+        <a to="/post/_newpost" class="button is-medium is-success" @click="NovoPost()">Novo post</a>
       </div>
       <div class="btn-acao">
         <router-link to="/publish" class="button is-medium is-success">Publicar Online</router-link>
       </div>
-      <vc-yugo-logo/>
+      <!-- <vc-yugo-logo/> -->
     </vc-dash-board>
   </div>
 </template>
@@ -35,16 +35,28 @@ export default {
       errors: []
     }
   },
+  methods: {
+    NovoPost() {
+      this.$http.post('http://localhost:8083/api/newpost',
+      {
+      }).then(response => {
+        console.log('Success : ' + JSON.stringify(response));
+        this.$router.push({ path: '/post/_newpost' }) // -> /user
+      }, response => {
+        console.log('Error : ' + JSON.stringify(response));
+      });
+    }
+  },
   mounted () {
-    axios
-    .get('http://localhost:8083/api')
-    .then(response => {
-      // JSON responses are automatically parsed.
-      this.posts = response.data
-    })
-    .catch(e => {
-      this.errors.push(e)
-    })
+    // axios
+    // .get('http://localhost:8083/api')
+    // .then(response => {
+    //   // JSON responses are automatically parsed.
+    //   this.posts = response.data
+    // })
+    // .catch(e => {
+    //   this.errors.push(e)
+    // })
   },
 }
 </script>
