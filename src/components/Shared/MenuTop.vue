@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 export default {
   data(){
     return{
@@ -34,11 +33,9 @@ export default {
   },
   created(){
     this.$http.get(this.$store.state.apiRoot + this.$store.state.pathPosts).then(response => {
-
     for (var i = 0; i < response.body.length; i++) {
         this.posts.push(response.body[i].nome.replace('.md', ''))
       }
-
   }, response => {
     // error callback
   });

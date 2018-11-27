@@ -1,7 +1,7 @@
 <template>
   <div class="tile">
-    <vc-menu/>
-    <vc-posts/>
+    <vc-menu-top/>
+    <vc-menu-side/>
     <vc-dash-board>
       <div class="btn-acao">
         <a to="/post/_newpost" class="button is-medium is-success" @click="NovoPost()">Novo post</a>
@@ -9,25 +9,21 @@
       <div class="btn-acao">
         <router-link to="/publish" class="button is-medium is-success">Publicar Online</router-link>
       </div>
-      <!-- <vc-yugo-logo/> -->
     </vc-dash-board>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import VcMenu from "@/components/Shared/Menu.vue"
-import VcPosts from "@/components/Shared/MenuSide.vue"
+import VcMenuTop from "@/components/Shared/MenuTop.vue"
+import VcMenuSide from "@/components/Shared/MenuSide.vue"
 import VcDashBoard from "@/components/Shared/DashBoard.vue"
-import VcYugoLogo from "@/views/Yugo.vue"
-import axios from 'axios';
 export default {
   name: 'home',
   components: {
-    VcMenu, // <vc-menu/>
-    VcPosts, // <vc-posts/>
+    VcMenuTop, // <vc-menu-top/>
+    VcMenuSide, // <vc-menu-side/>
     VcDashBoard, // <vc-dash-board></vc-dash-board>
-    VcYugoLogo // <vc-yugo-logo/>
   },
   data () {
     return {
@@ -41,23 +37,12 @@ export default {
       {
       }).then(response => {
         console.log('Success : ' + JSON.stringify(response));
-        this.$router.push({ path: '/post/_newpost' }) // -> /user
+        this.$router.push({ path: '/post/_newpost' })
       }, response => {
         console.log('Error : ' + JSON.stringify(response));
       });
     }
-  },
-  mounted () {
-    // axios
-    // .get('http://localhost:8083/api')
-    // .then(response => {
-    //   // JSON responses are automatically parsed.
-    //   this.posts = response.data
-    // })
-    // .catch(e => {
-    //   this.errors.push(e)
-    // })
-  },
+  }
 }
 </script>
 

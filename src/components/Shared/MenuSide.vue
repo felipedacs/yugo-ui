@@ -13,14 +13,13 @@
         <router-link :to="'/post/' + post"> <a :class="{'is-active': $route.params.filename == post}" >{{post}}</a> </router-link>
       </li>
     </ul>
-    <p class="menu-label">
+    <!-- <p class="menu-label">
       Ajuda
-    </p>
+    </p> -->
   </aside>
 </template>
 
 <script>
-import axios from 'axios';
 export default {
   data(){
     return{
@@ -30,26 +29,12 @@ export default {
   },
   created(){
     this.$http.get(this.$store.state.apiRoot + this.$store.state.pathPosts).then(response => {
-
-    for (var i = 0; i < response.body.length; i++) {
+      for (var i = 0; i < response.body.length; i++) {
         this.posts.push(response.body[i].nome.replace('.md', ''))
       }
-
-  }, response => {
-    // error callback
-  });
-
-    // axios
-    // .get(this.$store.state.apiRoot + this.$store.state.pathPosts)
-    // .then(response => {
-    //   for (var i = 0; i < response.data.length; i++) {
-    //     this.posts.push(response.data[i].Nome.replace('.md', ''))
-    //   }
-    // })
-    // .catch(e => {
-    //   this.errors.push(e)
-    // })
-
+    }, response => {
+      // error callback
+    });
   }
 }
 </script>

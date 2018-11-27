@@ -1,12 +1,12 @@
 <template lang="html">
   <div class="tile">
-    <vc-menu/>
-    <vc-posts/>
+    <vc-menu-top/>
+    <vc-menu-side/>
     <vc-dash-board>
 
       <div class="columns is-gapless is-mobile">
         <div class="column">
-          <a class="button is-danger btn-post is-fullwidth" @click="DeletarPost()"><span class="icon-trash-o"></span></a>
+          <a class="button is-danger btn-post is-fullwidth" @click="confirmDeletar = !confirmDeletar"><span class="icon-trash-o"></span></a>
         </div>
         <div class="column is-8">
           <b-field>
@@ -14,14 +14,22 @@
           </b-field>
         </div>
         <div class="column">
-          <a class="button is-warning btn-post is-fullwidth" @click="RenomearPost()"><span class="icon-pencil"></span></a>
+          <a class="button is-warning btn-post is-fullwidth" @click="confirmRenomear = !confirmRenomear"><span class="icon-pencil"></span></a>
         </div>
         <div class="column">
           <a class="button is-success btn-post is-fullwidth" @click="SalvarPost()"><span class="icon-check"></span></a>
         </div>
       </div>
 
+      <vc-confirm :mostra="confirmRenomear" @off="confirmRenomear = !confirmRenomear">
+        <p>Você será redirecionado à tela inicial, salve seu arquivo antes!</p>
+        <p><a class="button is-danger is-large" @click="RenomearPost()">Já salvei! Renomeie meu post!</a></p>
+      </vc-confirm>
 
+      <vc-confirm :mostra="confirmDeletar" @off="confirmDeletar = !confirmDeletar">
+        <p>Tem certeza disso?</p>
+        <p><a class="button is-danger is-large" @click="DeletarPost()">Sim, delete meu post!</a></p>
+      </vc-confirm>
 
       <b-field>
         <b-input type="textarea" v-model="post.conteudo"></b-input>
@@ -31,16 +39,17 @@
 </template>
 
 <script>
-import axios from 'axios';
-import VcMenu from "@/components/Shared/Menu.vue"
-import VcPosts from "@/components/Shared/MenuSide.vue"
+import VcMenuTop from "@/components/Shared/MenuTop.vue"
+import VcMenuSide from "@/components/Shared/MenuSide.vue"
 import VcDashBoard from "@/components/Shared/DashBoard.vue"
+import VcConfirm from "@/components/Post/Confirm.vue"
 export default {
   name: 'post',
   components: {
-    VcMenu, // <vc-menu/>
-    VcPosts, // <vc-posts/>
-    VcDashBoard // <vc-dash-board></vc-dash-board>
+    VcMenuTop, // <vc-menu-top/>
+    VcMenuSide, // <vc-menu-side/>
+    VcDashBoard, // <vc-dash-board></vc-dash-board>
+    VcConfirm // <vc-confirm/>
   },
   data(){
     return{
@@ -50,6 +59,8 @@ export default {
         conteudo: 'carregando...',
       },
       errors: [],
+      confirmRenomear: false, // boolean para aviso antes de renomear
+      confirmDeletar: false, // boolean para aviso antes de deletar
     }
   },
   mounted() {
@@ -67,12 +78,12 @@ export default {
       {
       }).then(response => {
         console.log('Success : ' + JSON.stringify(response));
+        this.$router.push({ path: '/' })
       }, response => {
         console.log('Error : ' + JSON.stringify(response));
       });
     },
     RenomearPost(){
-      console.log(this.nomeOriginal);
       var reqData = {
         "nome": this.nomeOriginal,
         "novoNome": this.post.nome,
@@ -83,6 +94,7 @@ export default {
       {
       }).then(response => {
         console.log('Success : ' + JSON.stringify(response));
+        this.$router.push({ path: '/' })
       }, response => {
         console.log('Error : ' + JSON.stringify(response));
       });
@@ -93,24 +105,37 @@ export default {
       var reqData = {"repo": vm.urlRepository}
 
       this.$http.post('http://localhost:8083/api/savepost', JSON.stringify(vm.post),
-      {
-      }).then(response => {
-        console.log('Success : ' + JSON.stringify(response));
+      {}).then(response => {
+        // console.log('Success : ' + JSON.stringify(response));
+        this.$toast.open({
+          duration: 5000,
+          message: 'Salvo com sucesso!',
+          position: 'is-bottom',
+          type: 'is-success'
+        });
       }, response => {
-        console.log('Error : ' + JSON.stringify(response));
+        // console.log('Error : ' + JSON.stringify(response));
+        this.$toast.open({
+          duration: 5000,
+          message: `Ocorreu erro`,
+          position: 'is-bottom',
+          type: 'is-danger'
+        });
       });
     },
     getPost() {
-      axios
-      .get('http://localhost:8083/api/post/' + this.$route.params.filename)
-      .then(response => {
-        this.post = response.data;
-        this.nomeOriginal=this.post.nome;
-        // console.log(response.data);
-      })
-      .catch(e => {
-        this.errors.push(e)
-      })
+      let vm = this;
+
+      this.$http.get('http://localhost:8083/api/post/' + this.$route.params.filename).then(response => {
+        vm.post = response.body;
+        vm.nomeOriginal = vm.post.nome;
+      }, response => {
+        this.$toast.open({
+          message: 'Ocorreu erro no carregamento do post!',
+          position: 'is-bottom',
+          type: 'is-danger'
+        });
+      });
     }
   }
 }
@@ -123,5 +148,9 @@ export default {
 
 .btn-post{
   margin: 0 !important;
+}
+
+textarea{
+  height: 70vh !important; /* rever compatibilidade com menu superior */
 }
 </style>
